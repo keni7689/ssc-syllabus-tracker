@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSC Syllabus Tracker</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --success: #06d6a0;
+            --warning: #ffd166;
+            --danger: #ef476f;
+            --dark: #1d3557;
+            --light: #f8f9fa;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+        }
+        h1 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        .subtitle {
+            color: #4a5568;
+            font-size: 1.1rem;
+        }
+        .subjects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        .subject-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        .subject-card:hover {
+            transform: translateY(-5px);
+        }
+        .card-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ga .card-header { background: linear-gradient(90deg, #ff6b6b, #ff8e53); }
+        .maths .card-header { background: linear-gradient(90deg, #4cc9f0, #4361ee); }
+        .english .card-header { background: linear-gradient(90deg, #7209b7, #3a0ca3); }
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .progress-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 4px;
+            transition: width 0.4s ease;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .topic-list {
+            list-style: none;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .topic-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .topic-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .topic-list::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
+            border-radius: 10px;
+        }
+        .topic-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .topic-item:last-child {
+            border-bottom: none;
+        }
+        .topic-checkbox {
+            margin-right: 12px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .topic-text {
+            flex: 1;
+            font-size: 1.05rem;
+            color: #2d3748;
+        }
+        .completed .topic-text {
+            text-decoration: line-through;
+            color: #718096;
+        }
+        .add-topic {
+            display: flex;
+            margin-top: 15px;
+        }
+        .add-topic input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px 0 0 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .add-topic input:focus {
+            border-color: var(--primary);
+        }
+        .add-topic button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .add-topic button:hover {
+            background: #3a56d4;
+        }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+            min-width: 150px;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 5px 0;
+        }
+        .stat-label {
+            color: #4a5568;
+            font-size: 0.95rem;
+        }
+        @media (max-width: 768px) {
+            .subjects {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SSC Syllabus Tracker</h1>
+            <p class="subtitle">Track your preparation progress for SSC exams</p>
+        </header>
+
+        <div class="subjects">
+            <!-- General Awareness -->
+            <div class="subject-card ga">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title">General Awareness</h2>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="ga-progress"></div>
+                        </div>
+                    </div>
+                    <span id="ga-count">0/0</span>
+                </div>
+                <div class="card-body">
+                    <ul class="topic-list" id="ga-topics">
+                        <!-- Topics will be added here -->
+                    </ul>
+                    <div class="add-topic">
+                        <input type="text" id="ga-new-topic" placeholder="Add new topic...">
+                        <button onclick="addTopic('ga')">Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Maths -->
+            <div class="subject-card maths">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title">Mathematics</h2>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="maths-progress"></div>
+                        </div>
+                    </div>
+                    <span id="maths-count">0/0</span>
+                </div>
+                <div class="card-body">
+                    <ul class="topic-list" id="maths-topics">
+                        <!-- Topics will be added here -->
+                    </ul>
+                    <div class="add-topic">
+                        <input type="text" id="maths-new-topic" placeholder="Add new topic...">
+                        <button onclick="addTopic('maths')">Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- English -->
+            <div class="subject-card english">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title">English</h2>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="english-progress"></div>
+                        </div>
+                    </div>
+                    <span id="english-count">0/0</span>
+                </div>
+                <div class="card-body">
+                    <ul class="topic-list" id="english-topics">
+                        <!-- Topics will be added here -->
+                    </ul>
+                    <div class="add-topic">
+                        <input type="text" id="english-new-topic" placeholder="Add new topic...">
+                        <button onclick="addTopic('english')">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="total-topics">0</div>
+                <div class="stat-label">Total Topics</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completed-topics">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="overall-progress">0%</div>
+                <div class="stat-label">Overall Progress</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize data structure
+        const syllabusData = {
+            ga: [],
+            maths: [],
+            english: []
+        };
+
+        // DOM elements
+        const topicLists = {
+            ga: document.getElementById('ga-topics'),
+            maths: document.getElementById('maths-topics'),
+            english: document.getElementById('english-topics')
+        };
+
+        const progressBars = {
+            ga: document.getElementById('ga-progress'),
+            maths: document.getElementById('maths-progress'),
+            english: document.getElementById('english-progress')
+        };
+
+        const countDisplays = {
+            ga: document.getElementById('ga-count'),
+            maths: document.getElementById('maths-count'),
+            english: document.getElementById('english-count')
+        };
+
+        // Load data from localStorage if available
+        function loadData() {
+            const savedData = localStorage.getItem('sscSyllabusData');
+            if (savedData) {
+                Object.assign(syllabusData, JSON.parse(savedData));
+            }
+            renderAllTopics();
+            updateStats();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('sscSyllabusData', JSON.stringify(syllabusData));
+            updateStats();
+        }
+
+        // Add new topic
+        function addTopic(subject) {
+            const input = document.getElementById(`${subject}-new-topic`);
+            const topicText = input.value.trim();
+            
+            if (topicText) {
+                syllabusData[subject].push({
+                    id: Date.now(),
+                    text: topicText,
+                    completed: false
+                });
+                input.value = '';
+                renderTopics(subject);
+                saveData();
+            }
+        }
+
+        // Toggle topic completion
+        function toggleTopic(subject, id) {
+            const topic = syllabusData[subject].find(t => t.id == id);
+            if (topic) {
+                topic.completed = !topic.completed;
+                renderTopics(subject);
+                saveData();
+            }
+        }
+
+        // Render topics for a subject
+        function renderTopics(subject) {
+            const list = topicLists[subject];
+            list.innerHTML = '';
+            
+            syllabusData[subject].forEach(topic => {
+                const li = document.createElement('li');
+                li.className = `topic-item ${topic.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <input type="checkbox" class="topic-checkbox" ${topic.completed ? 'checked' : ''} 
+                        onchange="toggleTopic('${subject}', ${topic.id})">
+                    <span class="topic-text">${topic.text}</span>
+                `;
+                list.appendChild(li);
+            });
+            
+            updateSubjectProgress(subject);
+        }
+
+        // Update progress for a subject
+        function updateSubjectProgress(subject) {
+            const total = syllabusData[subject].length;
+            const completed = syllabusData[subject].filter(t => t.completed).length;
+            const percentage = total > 0 ? (completed / total) * 100 : 0;
+            
+            progressBars[subject].style.width = `${percentage}%`;
+            countDisplays[subject].textContent = `${completed}/${total}`;
+        }
+
+        // Render all topics
+        function renderAllTopics() {
+            renderTopics('ga');
+            renderTopics('maths');
+            renderTopics('english');
+        }
+
+        // Update overall statistics
+        function updateStats() {
+            let totalTopics = 0;
+            let completedTopics = 0;
+            
+            Object.values(syllabusData).forEach(subject => {
+                totalTopics += subject.length;
+                completedTopics += subject.filter(t => t.completed).length;
+            });
+            
+            const overallProgress = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+            
+            document.getElementById('total-topics').textContent = totalTopics;
+            document.getElementById('completed-topics').textContent = completedTopics;
+            document.getElementById('overall-progress').textContent = `${overallProgress}%`;
+        }
+
+        // Initialize
+        loadData();
+
+        // Add enter key support for input fields
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const subject = input.id.replace('-new-topic', '');
+                    addTopic(subject);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
